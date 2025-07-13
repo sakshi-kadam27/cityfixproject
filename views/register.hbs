@@ -2,66 +2,269 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Register</title>
+  <title>CityFix - Register</title>
   <link rel="stylesheet" href="/style.css">
+  <style>
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #fff);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background-color: #0d47a1;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .navbar .logo-box {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-box h2 {
+      margin-right: 10px;
+    }
+
+    .logo-box img {
+      height: 40px;
+      border-radius: 20px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 2rem;
+      min-width: 60rem;
+    }
+
+    .form-container {
+      background-color: #9fb0ff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 14px 20px 20px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      min-width: 24rem;
+      flex: 1;
+      border: 2px solid black;
+    }
+
+    .form-container h2 {
+      margin-bottom: 1rem;
+      color: #0d47a1;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    button {
+      background-color: #0d47a1;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #1565c0;
+    }
+
+    .image-panel {
+      background: url('/images/register.jpg') center/contain no-repeat;
+      border-radius: 10px;
+      box-shadow: inset -1px -1px 20px 0px;
+      flex: 1;
+      height: 250px;
+      margin-left: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 1rem;
+      }
+
+      .image-panel {
+        display: none;
+      }
+    }
+
+    .welcome-text {
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      text-align: center;
+      color: #555;
+    }
+
+  </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="logo-box">
-      <h2>CITYFIX</h2>
       <img src="/images/cityfixlogo.jpg" alt="CityFix Logo">
+      <h2>CITYFIX</h2>
     </div>
     <ul class="nav-links">
       <li><a href="/home">Home</a></li>
-      <li><a href="/login">login</a></li>
+      <li><a href="/login">Login</a></li>
       <li><a href="/register">Register</a></li>
     </ul>
   </nav>
-  <div class="form-container">
-  <h2>Register</h2>
-  <form action="/auth/register" method="POST" onsubmit="return validateForm()">
-    <div class="form-group">
-      <input type="text" name="name" placeholder="Your full name" required>
-    </div>
-    <div class="form-group">
-      <input type="email" name="email" placeholder="Email address" required>
-    </div>
-    <div class="form-group">
-      <input type="text" name="phone" placeholder="Phone Number" required>
-    </div>
-    <div class="form-group">
-      <input type="password" name="password" placeholder="Password" required>
-    </div>
-    <div class="form-group">
-  <label>Occupation</label>
-  <select id="occupation" name="occupation" required>
-    <option value="">Select...</option>
-    <option value="customer">Customer</option>
-    <option value="service_provider">Service Provider</option>
-  </select>
-</div>
 
-<div class="form-group" id="workField" style="display: none;">
-  <label for="work">Your Service Type</label>
-  <input type="text" class="form-control" id="work" name="work" placeholder="e.g., Electrician, Plumber">
-</div>
-      <button type="submit">Register</button>
+  <div class="container">
+    <div class="form-container">
+      <h2>Create Your CityFix Account</h2>
+      <p class="welcome-text">Join its trusted professionals in your city. It’s quick and easy!</p>
+      <form action="/auth/register" method="POST" onsubmit="return validateForm()">
+        <div class="form-group">
+          <input type="text" name="name" placeholder="Your full name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" placeholder="Email address" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="phone" placeholder="Phone Number" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+          <label for="occupation">Occupation</label>
+          <select id="occupation" name="occupation" required>
+            <option value="">Select...</option>
+            <option value="customer">Customer</option>
+            <option value="service_provider">Service Provider</option>
+          </select>
+        </div>
 
+        <div class="form-group" id="workField" style="display: none;">
+          <label for="work">Your Service Type</label>
+          <input type="text" id="work" name="work" placeholder="e.g., Electrician, Plumber">
+        </div>
+<p id="error-msg" style="color: red; text-align: center; margin-bottom: 10px;"></p>
+
+        <button type="submit">Register</button>
+      </form>
+    </div>
+
+    <div class="image-panel">
       
-    </form>
+    </div>
   </div>
 
-  <script>
-    const occupationSelect = document.getElementById('occupation');
-    const workField = document.getElementById('workField');
+<script>
+  const occupationSelect = document.getElementById('occupation');
+  const workField = document.getElementById('workField');
 
-    occupationSelect.addEventListener('change', function () {
-      if (this.value === 'service_provider') {
-        workField.style.display = 'block';
-      } else {
-        workField.style.display = 'none';
-      }
-    });
-  </script>
+  occupationSelect.addEventListener('change', function () {
+    workField.style.display = this.value === 'service_provider' ? 'block' : 'none';
+  });
+
+  function validateForm() {
+    const name = document.querySelector('input[name="name"]');
+    const email = document.querySelector('input[name="email"]');
+    const phone = document.querySelector('input[name="phone"]');
+    const password = document.querySelector('input[name="password"]');
+    const occupation = document.querySelector('#occupation');
+    const work = document.querySelector('#work');
+    const errorMsg = document.getElementById('error-msg');
+
+    // Clear previous error
+    errorMsg.textContent = '';
+    name.style.border = email.style.border = phone.style.border = password.style.border = '';
+
+    // Name: only letters
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!nameRegex.test(name.value)) {
+      errorMsg.textContent = "Name must contain only letters.";
+      name.style.border = "2px solid red";
+      return false;
+    }
+
+    // Email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.value)) {
+      errorMsg.textContent = "Enter a valid email address.";
+      email.style.border = "2px solid red";
+      return false;
+    }
+
+    // Phone: 10 digits, starts with 6-9
+    const phoneRegex = /^[6-9][0-9]{9}$/;
+    if (!phoneRegex.test(phone.value)) {
+      errorMsg.textContent = "Enter a valid 10-digit phone number starting with 6–9.";
+      phone.style.border = "2px solid red";
+      return false;
+    }
+
+    // Password: 8-14 alphanumeric
+    {{!-- const passwordRegex = /^[A-Za-z0-9]{8,14}$/; --}}
+    const passwordRegex = /^[A-Za-z0-9@#$%^&+=]{8,14}$/;
+    if (!passwordRegex.test(password.value)) {
+      errorMsg.textContent = "Password must be 8–14 characters and alphanumeric only.";
+      password.style.border = "2px solid red";
+      return false;
+    }
+
+    // If service provider, work must be filled
+    if (occupation.value === 'service_provider' && work.value.trim() === '') {
+      errorMsg.textContent = "Please specify your service type.";
+      work.style.border = "2px solid red";
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
 </body>
 </html>
