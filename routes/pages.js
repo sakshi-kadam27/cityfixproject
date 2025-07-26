@@ -54,6 +54,10 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
+router.get('/portfolio', (req, res) => {
+  res.render('portfolio'); // ✅ make sure this just renders the page
+});
+
 
 
 

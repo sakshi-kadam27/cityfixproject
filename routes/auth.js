@@ -5,6 +5,8 @@ const authcontroller = require('../controller/auth');
 
 router.post('/register' , authcontroller.register);
 router.post('/login' ,    authcontroller.login);
+router.post('/portfolio' ,authcontroller.updatePortfolio);
+
 
 router.get('/logout', (req, res) => {
   req.session.destroy(() => {
