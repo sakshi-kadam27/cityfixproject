@@ -144,3 +144,74 @@ console.log(req.session);
     res.send("Portfolio updated successfully!");
   });
 };
+
+exports.updateCustomerDetails = (req, res) => {
+  const db = req.app.locals.db;
+  const { address, city } = req.body;
+console.log(req.session);
+  const userId = req.session.user?.id;
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized. Please log in.");
+  }
+
+  const sql = `
+    UPDATE users 
+    SET  address = ?, city = ? 
+    WHERE id = ?
+  `;
+
+  db.query(sql, [ address, city, userId], (err, result) => {
+    if (err) {
+      console.error("❌ DB Update Error:", err);
+      return res.status(500).send("Internal server error");
+    }
+
+    console.log("✅CustomerDetails updated for ID:", userId);
+    res.send("✅CustomerDetails updated successfully!");
+  });
+};
+
+exports.getAllServiceProviders = (req, res) => {
+  const db = req.app.locals.db;
+  console.log(req.session);
+  
+  const userId = req.session.user?.id;
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized. Please log in.");
+  }
+
+  // Get customer city
+  const getCustomerCity = "SELECT city FROM users WHERE id = ?";
+
+  db.query(getCustomerCity, [userId], (err, customerCityResult) => {
+    if (err) {
+      console.error("❌ Error fetching customer city:", err);
+      return res.status(500).send("Internal server error");
+    }
+
+    if (customerCityResult.length === 0) {
+      return res.status(404).send("City not found for the user.");
+    }
+
+    const customerCity = customerCityResult[0].city;
+    console.log("✅ Customer city:", customerCity);
+
+    // Fetch service providers in the same city
+    const sql = "SELECT * FROM service_provider WHERE city = ?";
+
+    db.query(sql, [customerCity], (err, serviceProviders) => {
+      if (err) {
+        console.error("❌ Error fetching service providers:", err);
+        return res.status(500).send("Internal server error");
+      }
+
+      return res.send({
+        message: "✅ Service Providers fetched successfully!",
+        data: serviceProviders
+      });
+    });
+  });
+};
+

@@ -61,35 +61,217 @@
 </body>
 </html>-->
 
+
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>CityFix - Your Trusted Local Service Partner</title>
   <link rel="stylesheet" href="/style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #111;
+      line-height: 1.6;
+      padding-top: 60px; /* Add padding to ensure content isn't hidden behind fixed navbar */
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #0d47a1;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-box img {
+      width: 40px;
+      margin-right: 10px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+    }
+
+    .nav-links li {
+      margin-left: 25px;
+    }
+
+    .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Mobile Menu */
+    .menu-btn {
+      display: none;
+      font-size: 30px;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin: 0 15px;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    /* Mobile view styles */
+    @media (max-width: 768px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background-color: #0d47a1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        padding-top: 50px;
+        z-index: 1000;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li {
+        margin: 20px 0;
+      }
+
+      .nav-links li a {
+        color: white;
+        font-size: 22px;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+      }
+
+      .overlay.active {
+        display: block;
+      }
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(to right, #ddc2fb, #a6c1ee);
+      padding: 40px 20px;
+      text-align: center;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+    }
+
+    .hero-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+    }
+
+    /* Footer */
+    footer {
+      color: #000;
+      text-align: center;
+      padding: 20px;
+      font-size: 1rem;
+    }
+
+  </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar">
+  <!-- Hamburger Menu Button -->
+  <div class="menu-btn" onclick="toggleMenu()">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/1200px-Hamburger_icon.svg.png" alt="menu">
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
     <div class="logo-box">
       <img src="/images/cityfixlogo.jpg" alt="CityFix Logo">
       <h2>CITYFIX</h2>
     </div>
     <ul class="nav-links">
-      <li><a href="/home">Home</a></li>
-      <li><a href="/login">Login</a></li>
-      <li><a href="/register">Register</a></li>
+      <li><a href="/customerDetailsUpdate">Update Details</a></li>
+      <li><a href="/login">Search Service</a></li>
+      <li><a href="/register">My Orders</a></li>
     </ul>
   </nav>
-<!--<pre>{{{user}}}</pre> -->
 
-<section class="hero">
+  <!-- Overlay to close the menu when clicked outside -->
+  <div class="overlay" onclick="closeMenu()"></div>
+
+  <!-- Welcome Message -->
+  <div class="container">
+    <h2 id="welcome">Welcome 👋</h2>
+    <p id="user-role">Your role: Loading...</p>
+  </div>
+
+  <section class="hero">
     <div class="hero-content">
-<h1>Welcome 👋</h1>
-{{!-- <p>Your role: {{user.occupation}}</p> --}}
-
-
+      <h1>Welcome 👋</h1>
       <p>You're logged in as a trusted customer of CityFix!</p>
     </div>
   </section>
@@ -108,5 +290,44 @@
     <p>&copy; 2025 CityFix. All rights reserved.</p>
   </footer>
 
+  <script>
+    // Toggle the menu on/off
+    function toggleMenu() {
+      const menu = document.querySelector('.nav-links');
+      const overlay = document.querySelector('.overlay');
+      menu.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    // Close the menu
+    function closeMenu() {
+      const menu = document.querySelector('.nav-links');
+      const overlay = document.querySelector('.overlay');
+      menu.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+
+    // Fetch session user data from backend and store in localStorage
+    fetch('/auth/me')
+      .then(response => {
+        if (!response.ok) throw new Error("Not logged in");
+        return response.json();
+      })
+      .then(user => {
+        // Store user info in localStorage
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Update the UI
+        document.getElementById('welcome').textContent = `Welcome, ${user.name}`;
+        document.getElementById('user-role').textContent = `Your role: ${user.occupation}`;
+      })
+      .catch(err => {
+        console.error(err);
+        // Redirect to login if not authenticated
+        window.location.href = '/login';
+      });
+  </script>
+
 </body>
+
 </html>

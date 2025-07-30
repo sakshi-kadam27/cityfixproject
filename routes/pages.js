@@ -58,7 +58,17 @@ router.get('/portfolio', (req, res) => {
   res.render('portfolio'); // ✅ make sure this just renders the page
 });
 
+router.get('/service_provider_dashboard', (req, res) => {
+  res.render('dashboard_sp'); // ✅ make sure this just renders the page
+});
 
+router.get('/customerDetailsUpdate', (req, res) => {
+  res.render('customerDetailsUpdate'); // ✅ make sure this just renders the page
+});
+
+router.get('/searchService', (req, res) => {
+  res.render('searchService'); // ✅ make sure this just renders the page
+});
 
 
 module.exports = router;

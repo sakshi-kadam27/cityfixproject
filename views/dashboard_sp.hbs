@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - CityFix</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>CityFix</h1>
+    <div class="user-info">Welcome, {{providerName}}</div>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">My Orders</a></li>
+      <li><a href="#">My Ratings</a></li>
+      <li><a href="#">Portfolio</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h2>My Schedule (Today's Orders)</h2>
+      {{#if todaySchedule.length}}
+      <table>
+        <tr>
+          <th>Customer</th><th>Service</th><th>Date</th><th>Time</th><th>Location</th>
+        </tr>
+        {{#each todaySchedule}}
+        <tr>
+          <td>{{sakshi}}</td>
+          <td>{{service}}</td>
+          <td>{{date}}</td>
+          <td>{{time}}</td>
+          <td>{{location}}</td>
+        </tr>
+        {{/each}}
+      </table>
+      {{else}}
+      <p>No schedule for today.</p>
+      {{/if}}
+    </section>
+
+    <section>
+      <h2>Service History</h2>
+      {{#if serviceHistory.length}}
+      <table>
+        <tr>
+          <th>Customer</th><th>Service</th><th>Date</th><th>Status</th>
+        </tr>
+        {{#each serviceHistory}}
+        <tr>
+          <td>{{customer_name}}</td>
+          <td>{{service}}</td>
+          <td>{{date}}</td>
+          <td>{{status}}</td>
+        </tr>
+        {{/each}}
+      </table>
+      {{else}}
+      <p>No previous history.</p>
+      {{/if}}
+    </section>
+  </main>
+</body>
+</html>

@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #ffffff;
@@ -12,33 +13,40 @@ body {
 
 /* Navbar */
 .navbar {
-  background-color: #0d47a1; /* classic pink */
+  background-color: #0d47a1;
+  /* classic pink */
   color: #000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 40px;
 }
+
 .logo-box {
   display: flex;
   align-items: center;
 }
+
 .logo-box img {
   width: 40px;
   margin-right: 10px;
 }
+
 .nav-links {
   list-style: none;
   display: flex;
 }
+
 .nav-links li {
   margin-left: 25px;
 }
+
 .nav-links a {
   color: #ffffff;
   text-decoration: none;
   font-weight: bold;
 }
+
 .nav-links a:hover {
   text-decoration: underline;
 }
@@ -53,7 +61,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 60vh;
+  width: 100vw;
 }
 
 .hero-content {
@@ -91,29 +99,35 @@ body {
   padding: 60px 20px;
   background-color: #ffffff;
   text-align: center;
+  width: 100vw;
 }
+
 .services h2 {
   font-size: 2rem;
   margin-bottom: 30px;
 }
+
 .service-cards {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
 }
+
 .card {
   background-color: #f8f8f8;
   padding: 30px;
   border-radius: 10px;
   width: 150px;
   font-size: 1.1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
+
 .card span {
   display: block;
   margin-top: 10px;
 }
+
 .card:hover {
   background-color: #fcddec;
   transform: translateY(-3px);
@@ -125,32 +139,34 @@ body {
   background-color: #fff0fa;
   text-align: center;
 }
+
 .how-it-works h2 {
   font-size: 2rem;
   margin-bottom: 30px;
 }
+
 .steps {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 25px;
 }
+
 .step {
   background-color: #ffffff;
   padding: 25px;
   border-radius: 8px;
   width: 220px;
   font-size: 1.1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 /* Footer */
 footer {
-  background-color: #0d47a1;
   color: #000;
   text-align: center;
   padding: 20px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 
@@ -249,6 +265,7 @@ button {
 button:hover {
   background-color: #45a049;
 }
+
 button {
   background-color: #4CAF50;
   color: white;
@@ -259,7 +276,88 @@ button {
   font-weight: bold;
   transition: background 0.3s ease;
 }
+
 button:hover {
   background-color: #45a049;
 }
 
+.menu-btn {
+  display: none;
+  font-size: 30px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Mobile view styles */
+@media (max-width: 768px) {
+  .menu-btn {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    padding-top: 50px;
+    z-index: 1000;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    margin: 20px 0;
+  }
+
+  .nav-links li a {
+    color: white;
+    font-size: 22px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+  }
+
+  .overlay.active {
+    display: block;
+  }
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin: 0 15px;
+}
+
+.nav-links li a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
