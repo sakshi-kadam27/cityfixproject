@@ -238,13 +238,13 @@
       return false;
     }
 
-    // Phone: 10 digits, starts with 6-9
-    //const phoneRegex = /^[6-9][0-9]{9}$/;
-   // if (!phoneRegex.test(phone.value)) {
-      //errorMsg.textContent = "Enter a valid 10-digit phone number starting with 6–9.";
-      //phone.style.border = "2px solid red";
-     // return false;
-   // }
+    Phone: 10 digits, starts with 6-9
+    const phoneRegex = /^[6-9][0-9]{9}$/;
+    if (!phoneRegex.test(phone.value)) {
+      errorMsg.textContent = "Enter a valid 10-digit phone number starting with 6–9.";
+      phone.style.border = "2px solid red";
+      return false;
+   }
 
     // Password: 8-14 alphanumeric
     {{!-- const passwordRegex = /^[A-Za-z0-9]{8,14}$/; --}}

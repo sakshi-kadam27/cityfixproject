@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,7 +127,8 @@
       width: 300px;
     }
 
-    .modal-content input[type="date"], .modal-content input[type="time"] {
+    .modal-content input[type="date"],
+    .modal-content input[type="time"] {
       padding: 10px;
       width: 100%;
       margin: 10px 0;
@@ -146,14 +148,15 @@
     .modal-content button:hover {
       background-color: #003366;
     }
-
   </style>
 </head>
+
 <body>
 
   <!-- Search Bar -->
   <div class="search-container">
-    <input type="text" class="search-bar" placeholder="Search for service providers..." />
+    <input type="text" id="search-input" class="search-bar" placeholder="Search for service providers..." />
+
   </div>
 
   <!-- Loading Message -->
@@ -179,6 +182,7 @@
         <input type="date" id="appointment-date" required>
         <input type="time" id="appointment-time" required>
         <input type="hidden" id="provider-id">
+        <input type="hidden" id="provider-work">
         <button type="submit">Submit</button>
       </form>
     </div>
@@ -186,6 +190,8 @@
 
   <script>
     // Function to fetch and display service providers
+    let allProviders = [];
+
     async function fetchServiceProviders() {
       try {
         const response = await fetch('http://localhost:5000/auth/getAllServiceProviders');
@@ -194,30 +200,20 @@
         }
 
         const data = await response.json();
-        if (data && data.data && data.data.length > 0) {
-          const serviceProviders = data.data;
+        if (data?.data?.length > 0) {
+          allProviders = data.data;
+          displayProviders(allProviders); // initial load
 
           document.getElementById('loading-message').style.display = 'none';
-          const container = document.getElementById('service-providers-section');
 
-          serviceProviders.forEach(provider => {
-            const card = document.createElement('div');
-            card.classList.add('service-provider-card');
-            card.setAttribute('data-id', provider.id);
-
-            card.innerHTML = `
-              <h3>${provider.name}</h3>
-              <p>Role: ${provider.work}</p>
-              <p>Phone: ${provider.phone}</p>
-              <p>Address: ${provider.address}</p>
-              <p>Price: ${provider.price}</p>
-            `;
-
-            card.addEventListener('click', () => {
-              showModal(provider.id);
-            });
-
-            container.appendChild(card);
+          // Listen to search input
+          const searchInput = document.getElementById('search-input');
+          searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filtered = allProviders.filter(provider =>
+              provider.work.toLowerCase().includes(searchTerm)
+            );
+            displayProviders(filtered);
           });
         } else {
           document.getElementById('loading-message').textContent = "No service providers found.";
@@ -228,11 +224,43 @@
       }
     }
 
+    function displayProviders(providers) {
+      const container = document.getElementById('service-providers-section');
+      container.innerHTML = ''; // clear existing cards
+
+      providers.forEach(provider => {
+        const card = document.createElement('div');
+        card.classList.add('service-provider-card');
+        card.setAttribute('data-id', provider.id);
+
+        card.innerHTML = `
+      <h3>${provider.name}</h3>
+      <p>Role: ${provider.work}</p>
+      <p>Address: ${provider.address}</p>
+      <p>Price: ${provider.price}</p>
+    `;
+
+        card.addEventListener('click', () => {
+          showModal(provider.id, provider.work);
+        });
+
+        container.appendChild(card);
+      });
+
+      if (providers.length === 0) {
+        container.innerHTML = "<p>No matching service providers found.</p>";
+      }
+    }
+
+
     // Show the modal with the selected provider's id
-    function showModal(providerId) {
+    function showModal(providerId, providerService) {
       const modal = document.getElementById('modal');
       const providerIdField = document.getElementById('provider-id');
+      const providerServiceField = document.getElementById('provider-work');
       providerIdField.value = providerId;
+      providerServiceField.value = providerService;
+
 
       const today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
       document.getElementById('appointment-date').setAttribute('min', today); // Prevent selecting past dates
@@ -241,26 +269,58 @@
     }
 
     // Close the modal on click outside the modal content
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (event.target === document.getElementById('modal')) {
         document.getElementById('modal').style.display = 'none';
       }
     }
 
     // Handle form submission
-    document.getElementById('appointment-form').addEventListener('submit', function(event) {
+    document.getElementById('appointment-form').addEventListener('submit', function (event) {
       event.preventDefault();
 
       const date = document.getElementById('appointment-date').value;
       const time = document.getElementById('appointment-time').value;
       const providerId = document.getElementById('provider-id').value;
+      const providerService = document.getElementById('provider-work').value;
+
 
       // You can submit this data to your backend API here
       console.log('Appointment Details:', {
         providerId,
+        providerService,
         date,
         time
       });
+
+
+      fetch("http://localhost:5000/auth/storeBookingDetails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          service_provider_id: providerId,
+          date: date,
+          time: time,
+          name_of_service: providerService, // dynamically use from session
+          status: 'pending'
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Appointment successfully booked!");
+          } else {
+            alert("Failed to book appointment.");
+          }
+          document.getElementById('modal').style.display = 'none';
+        })
+        .catch(error => {
+          console.error("Booking error:", error);
+          alert("Something went wrong!");
+        });
+
 
       alert('Appointment successfully booked!');
       document.getElementById('modal').style.display = 'none';
@@ -271,4 +331,5 @@
   </script>
 
 </body>
+
 </html>

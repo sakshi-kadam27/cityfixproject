@@ -71,4 +71,9 @@ router.get('/searchService', (req, res) => {
 });
 
 
+router.get('/customerOrders', (req, res) => {
+  res.render('customerOrders'); // ✅ make sure this just renders the page
+});
+
+
 module.exports = router;

@@ -104,7 +104,7 @@ exports.login = (req, res) => {
         }
 
         req.session.user = {
-          id: user.Id,
+          id: user.id,
           name: user.name,
           email: user.email,
           occupation: user.occupation,
@@ -215,3 +215,70 @@ exports.getAllServiceProviders = (req, res) => {
   });
 };
 
+exports.storeBookingDetails = (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.status(401).send("Unauthorized. Please log in.");
+    }
+
+    // Destructure the required fields from the request body
+    const { name_of_service, service_provider_id, date, time } = req.body;
+    const status = "pending"; // Default status
+
+    // Validate inputs (optional but recommended)
+    if (!name_of_service || !service_provider_id || !date || !time) {
+      return res.status(400).send("Missing required booking details.");
+    }
+
+    // Insert booking into database
+    db.query(
+      "INSERT INTO booking SET ?",
+      {
+        name_of_service,
+        userid: userId,
+        service_provider_id,
+        date,
+        time,
+        status,
+      },
+      (err, result) => {
+        if (err) {
+          console.error("Booking error:", err);
+          return res.status(500).send("Booking failed due to server error.");
+        }
+        return res.status(200).send("✅ Booking successful.");
+      }
+    );
+  } catch (error) {
+    console.error("Unexpected error in storeBookingDetails:", error);
+    return res.status(500).send("Unexpected server error.");
+  }
+};
+
+exports.getCustomerOrders = (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.status(401).send("Unauthorized. Please log in.");
+    }
+
+    db.query("SELECT * FROM booking WHERE userid = ?", [userId], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).send("Failed to fetch orders.");
+      }
+
+      // Send the booking data back as JSON
+      return res.status(200).json({ success: true, orders: result });
+    });
+
+  } catch (error) {
+    console.error("Unexpected error in getCustomerOrders:", error);
+    return res.status(500).send("Unexpected server error.");
+  }
+};

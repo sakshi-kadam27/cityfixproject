@@ -8,6 +8,10 @@ router.post('/login' ,    authcontroller.login);
 router.post('/portfolio' ,authcontroller.updatePortfolio);
 router.post('/updateCustomerDetails' ,authcontroller.updateCustomerDetails);
 router.get('/getAllServiceProviders' ,authcontroller.getAllServiceProviders);
+router.post('/storeBookingDetails' ,authcontroller.storeBookingDetails);
+router.get('/getCustomerOrders' ,authcontroller.getCustomerOrders);
+
+
 
 
 // router.post('/dashboard' ,authcontroller.updatePortfolio);
