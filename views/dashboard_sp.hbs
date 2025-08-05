@@ -4,6 +4,103 @@
   <meta charset="UTF-8">
   <title>Dashboard - CityFix</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+    }
+
+    .user-info {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    nav {
+      background-color: #343a40;
+      padding: 10px 20px;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-right: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffc107;
+    }
+
+    main {
+      padding: 30px;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    table th,
+    table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    table th {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -13,10 +110,10 @@
 
   <nav>
     <ul>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">My Orders</a></li>
+      <li><a href="/service_provider_dashboard">Dashboard</a></li>
+      <li><a href="/serviceProviderOrders">My Orders</a></li>
       <li><a href="#">My Ratings</a></li>
-      <li><a href="#">Portfolio</a></li>
+      <li><a href="/portfolio">Portfolio</a></li>
     </ul>
   </nav>
 
@@ -26,11 +123,15 @@
       {{#if todaySchedule.length}}
       <table>
         <tr>
-          <th>Customer</th><th>Service</th><th>Date</th><th>Time</th><th>Location</th>
+          <th>Customer</th>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Location</th>
         </tr>
         {{#each todaySchedule}}
         <tr>
-          <td>{{sakshi}}</td>
+          <td>{{customer_name}}</td>
           <td>{{service}}</td>
           <td>{{date}}</td>
           <td>{{time}}</td>
@@ -48,7 +149,10 @@
       {{#if serviceHistory.length}}
       <table>
         <tr>
-          <th>Customer</th><th>Service</th><th>Date</th><th>Status</th>
+          <th>Customer</th>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Status</th>
         </tr>
         {{#each serviceHistory}}
         <tr>

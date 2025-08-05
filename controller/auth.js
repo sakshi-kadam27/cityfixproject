@@ -112,7 +112,7 @@ exports.login = (req, res) => {
         };
         console.log('req.session', req.session)
 
-        return res.redirect("/portfolio");
+        return res.redirect("/service_provider_dashboard");
       });
     }
   });
@@ -141,7 +141,8 @@ console.log(req.session);
     }
 
     console.log("✅ Portfolio updated for ID:", userId);
-    res.send("Portfolio updated successfully!");
+    // res.send("Portfolio updated successfully!");
+     return res.redirect("/service_provider_dashboard");
   });
 };
 
@@ -281,4 +282,119 @@ exports.getCustomerOrders = (req, res) => {
     console.error("Unexpected error in getCustomerOrders:", error);
     return res.status(500).send("Unexpected server error.");
   }
+};
+
+// For customers only
+exports.getCustomerDetailsBeforeUpdate = (req, res) => {
+  const db = req.app.locals.db;
+  const userId = req.session.user?.id;
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized. Please log in.");
+  }
+
+  const sql = "SELECT * FROM users WHERE id = ?";
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching customer details:", err);
+      return res.status(500).send("Internal server error");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("Customer not found.");
+    }
+
+    return res.send({
+      message: "✅ Customer details fetched successfully!",
+      role: "customer",
+      data: results[0],
+    });
+  });
+};
+
+// For service providers only
+exports.getServiceProviderDetailsBeforeUpdate = (req, res) => {
+  const db = req.app.locals.db;
+  const userId = req.session.user?.id;
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized. Please log in.");
+  }
+
+  const sql = "SELECT * FROM service_provider WHERE id = ?";
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching service provider details:", err);
+      return res.status(500).send("Internal server error");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("Service provider not found.");
+    }
+
+    return res.send({
+      message: "✅ Service provider details fetched successfully!",
+      role: "service_provider",
+      data: results[0],
+    });
+  });
+};
+
+exports.getServiceProvidersOrders = (req,res)=>{
+   const db = req.app.locals.db;
+  const userId = req.session.user?.id;
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized. Please log in.");
+  }
+  const sql = `SELECT booking.*, users.name AS customer_name, users.phone, users.address, users.email
+FROM booking
+LEFT JOIN users ON booking.userid = users.id
+WHERE booking.service_provider_id = ? AND booking.status = 'pending';`;
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching service provider details:", err);
+      return res.status(500).send("Internal server error");
+    }
+
+    // if (results.length === 0) {
+    //   return res.status(404).send("Service provider not found.");
+    // }
+
+    return res.send({
+      message: "✅ Service provider details fetched successfully!",
+      role: "service_provider",
+      data: results,
+    });
+  });
+
+}
+
+
+exports.updateOrderStatus = (req, res) => {
+  const db = req.app.locals.db;
+  const { id, status } = req.body;
+
+  if (!id || !status) {
+    return res.status(400).send({ message: "Missing id or status" });
+  }
+
+  const validStatus = ['accepted', 'rejected'];
+  if (!validStatus.includes(status)) {
+    return res.status(400).send({ message: "Invalid status" });
+  }
+
+  const sql = "UPDATE booking SET status = ? WHERE id = ?";
+  db.query(sql, [status, id], (err, result) => {
+    if (err) {
+      console.error("❌ Error updating booking:", err);
+      return res.status(500).send({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ message: "Booking not found" });
+    }
+
+    return res.send({ message: `Booking ${id} marked as ${status}` });
+  });
 };

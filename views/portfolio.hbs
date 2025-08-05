@@ -3,128 +3,172 @@
 <head>
   <meta charset="UTF-8">
   <title>Update Portfolio</title>
-  <link rel="stylesheet" href="/style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 30px;
+      flex: 1;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .info p {
+      font-size: 16px;
+      margin: 10px 0;
+      color: #444;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Update Your Portfolio</h2>
+
+<div class="container">
+  
+  <!-- LEFT: CURRENT DATA -->
+  <div class="left">
+    <h2>Your Current Portfolio</h2>
+    <div class="info">
+      <p><strong>Shop Name:</strong> <span id="curShop">Loading...</span></p>
+      <p><strong>Address:</strong> <span id="curAddress">Loading...</span></p>
+      <p><strong>Price:</strong> ₹<span id="curPrice">Loading...</span></p>
+      <p><strong>City:</strong> <span id="curCity">Loading...</span></p>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM TO UPDATE -->
+  <div class="right">
+    <h2>Update Portfolio</h2>
     <form id="portfolioForm" action="/auth/portfolio" method="POST" onsubmit="return validatePortfolioForm()">
       <input type="hidden" name="_method" value="PUT">
 
-      <label>Shop Name:</label>
+      <label for="shop_name">Shop Name:</label>
       <input type="text" name="shop_name" id="shop_name" required>
 
-      <label>Address:</label>
-      <textarea name="address" id="address" required></textarea>
+      <label for="address">Address:</label>
+      <textarea name="address" id="address" rows="3" required></textarea>
 
-      <label>Price:</label>
+      <label for="price">Price:</label>
       <input type="text" name="price" id="price" placeholder="e.g. ₹200" required>
 
-      <label>City:</label>
-      <input type="text" name="city" id="city" placeholder="Thane" required>
+      <label for="city">City:</label>
+      <input type="text" name="city" id="city" placeholder="e.g. Thane" required>
 
       <button type="submit">Update Portfolio</button>
     </form>
   </div>
+</div>
 
-  <script>
-    function validatePortfolioForm() {
-      const shopName = document.getElementById("shop_name").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const price = document.getElementById("price").value.trim();
-      const city = document.getElementById("city").value.trim();
+<script>
+  // Load current portfolio from backend
+  fetch('/auth/getServiceProviderDetailsBeforeUpdate')
+    .then(res => res.json())
+    .then(data => {
+      console.log('data', data)
+      document.getElementById('curShop').textContent = data.data.shop_name || 'N/A';
+      document.getElementById('curAddress').textContent = data.data.address || 'N/A';
+      document.getElementById('curPrice').textContent = data.data.price || 'N/A';
+      document.getElementById('curCity').textContent = data.data.city || 'N/A';
 
-      if (!shopName || !address || !price || !city) {
-        alert("All fields are required.");
-        return false;
-      }
+      // Pre-fill form as well
+      document.getElementById('shop_name').value = data.data.shop_name || '';
+      document.getElementById('address').value = data.data.address || '';
+      document.getElementById('price').value = data.data.price || '';
+      document.getElementById('city').value = data.data.city || '';
+    })
+    .catch(err => {
+      alert("Failed to load portfolio data.");
+      console.error(err);
+    });
 
-      if (!/^[0-9₹\-\s]+$/.test(price)) {
-        alert("Price should be a valid format like ₹200 or ₹100-₹300.");
-        return false;
-      }
+  function validatePortfolioForm() {
+    const shopName = document.getElementById("shop_name").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const city = document.getElementById("city").value.trim();
 
-      if (!/^[A-Za-z\s]+$/.test(city)) {
-        alert("City should contain only letters.");
-        return false;
-      }
-
-      return true;
+    if (!shopName || !address || !price || !city) {
+      alert("All fields are required.");
+      return false;
     }
-  </script>
+
+    if (!/^[0-9₹\-\s]+$/.test(price)) {
+      alert("Price should be like ₹200 or ₹100-₹300.");
+      return false;
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(city)) {
+      alert("City should contain only letters.");
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
 </body>
 </html>
-
-<style>
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f2f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.container {
-  background-color: #ffffff;
-  padding: 30px;
-  width: 100%;
-  max-width: 500px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  text-align: center;
-  color: #333333;
-  margin-bottom: 25px;
-}
-
-form label {
-  display: block;
-  margin-bottom: 8px;
-  color: #333;
-  font-weight: 600;
-}
-
-form input,
-form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-
-form input:focus,
-form textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 12px;
-  border: none;
-  width: 100%;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-</style>

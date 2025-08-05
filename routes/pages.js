@@ -75,5 +75,8 @@ router.get('/customerOrders', (req, res) => {
   res.render('customerOrders'); // ✅ make sure this just renders the page
 });
 
+router.get('/serviceProviderOrders', (req, res) => {
+  res.render('serviceProviderOrders'); // ✅ make sure this just renders the page
+});
 
 module.exports = router;

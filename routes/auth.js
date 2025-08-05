@@ -10,6 +10,11 @@ router.post('/updateCustomerDetails' ,authcontroller.updateCustomerDetails);
 router.get('/getAllServiceProviders' ,authcontroller.getAllServiceProviders);
 router.post('/storeBookingDetails' ,authcontroller.storeBookingDetails);
 router.get('/getCustomerOrders' ,authcontroller.getCustomerOrders);
+router.get('/getServiceProviderDetailsBeforeUpdate' ,authcontroller.getServiceProviderDetailsBeforeUpdate);
+router.get('/getCustomerDetailsBeforeUpdate' ,authcontroller.getCustomerDetailsBeforeUpdate);
+router.get('/getServiceProvidersOrders' ,authcontroller.getServiceProvidersOrders);
+router.patch('/updateOrderStatus' ,authcontroller.updateOrderStatus);
+
 
 
 
