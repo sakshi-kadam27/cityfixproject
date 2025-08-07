@@ -340,6 +340,34 @@ exports.getServiceProviderDetailsBeforeUpdate = (req, res) => {
   });
 };
 
+// For Customers only
+exports.getCustomerDetailsBeforeUpdate = (req, res) => {
+  const db = req.app.locals.db;
+  const userId = req.session.user?.id;
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized. Please log in.");
+  }
+
+  const sql = "SELECT * FROM users WHERE id = ?";
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching Customers details:", err);
+      return res.status(500).send("Internal server error");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("Customers not found.");
+    }
+
+    return res.send({
+      message: "✅ Customers details fetched successfully!",
+      role: "Customer",
+      data: results[0],
+    });
+  });
+};
+
 exports.getServiceProvidersOrders = (req,res)=>{
    const db = req.app.locals.db;
   const userId = req.session.user?.id;

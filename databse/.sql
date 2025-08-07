@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 31, 2025 at 05:26 PM
+-- Generation Time: Aug 07, 2025 at 12:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,6 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `booking` (
+  `id` int(11) NOT NULL,
   `name_of_service` varchar(255) NOT NULL,
   `userid` int(255) NOT NULL,
   `service_provider_id` int(255) NOT NULL,
@@ -40,10 +41,11 @@ CREATE TABLE `booking` (
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`name_of_service`, `userid`, `service_provider_id`, `date`, `time`, `status`) VALUES
-('plumber', 18, 1, '2025', '20', 'pending'),
-('plumber', 18, 1, '2025-08-02', '22', 'pending'),
-('plumber', 18, 1, '2025-08-03', '22:42', 'pending');
+INSERT INTO `booking` (`id`, `name_of_service`, `userid`, `service_provider_id`, `date`, `time`, `status`) VALUES
+(1, 'plumber', 18, 1, '2025', '20', 'rejected'),
+(2, 'plumber', 18, 1, '2025-08-02', '22', 'rejected'),
+(3, 'plumber', 18, 1, '2025-08-03', '22:42', 'accepted'),
+(4, 'plumber', 19, 1, '2025-08-07', '00:13', 'accepted');
 
 -- --------------------------------------------------------
 
@@ -70,7 +72,7 @@ CREATE TABLE `service_provider` (
 --
 
 INSERT INTO `service_provider` (`id`, `name`, `email`, `phone`, `password`, `occupation`, `work`, `address`, `price`, `city`, `shop_name`) VALUES
-(1, 'babu', 'babu45@gmail.com', 2147483647, 'babu@452', 'service_provider', 'plumber', 'azadnagar thane', 100, 'thane', 'babu shop'),
+(1, 'babu', 'babu45@gmail.com', 2147483647, 'babu@452', 'service_provider', 'plumber', 'some addres', 98, 'Thane', 'balu'),
 (4, 'Rohan', 'rohan34@gmail.com', 2147483647, 'rohan@34', 'service_provider', 'Electrician', 'fghj76', 277, 'Thane', 'shiva');
 
 -- --------------------------------------------------------
@@ -98,11 +100,17 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `occupation`, `work`, `address`, `city`) VALUES
 (1, 'RAMCHANDRA PANDURANG', 'ramadaskadam72@gmail.com', '09221522135', '$2b$08$RLr0QExPB3A57mL4I.W02.yW7QzC46K/MUb2AooXNfo', 'customer', NULL, NULL, NULL),
 (18, 'sakshi', 'sakshi54@gmail.com', '9867756819', 'sakshi@540', 'customer', NULL, 'my adderesss', 'thane'),
-(19, 'mohan', 'mohan34@gmail.com', '6543298760', 'mohan@34', 'customer', NULL, 'dghj756yh', 'Thane');
+(19, 'mohan', 'mohan34@gmail.com', '6543298760', 'mohan@34', 'customer', NULL, 'op', 'Thane');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `booking`
+--
+ALTER TABLE `booking`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `service_provider`
@@ -119,6 +127,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `booking`
+--
+ALTER TABLE `booking`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `service_provider`

@@ -7,22 +7,54 @@
 </head>
 <body>
   <div class="container">
+
+
+  <!-- LEFT: CURRENT DATA -->
+  <div class="left">
+    <h2>Your Current Portfolio</h2>
+    <div class="info">
+      <p><strong>Address:</strong> <span id="curAddress">Loading...</span></p>
+      <p><strong>City:</strong> <span id="curCity">Loading...</span></p>
+    </div>
+  </div>
+    
+    <div class="right">
     <h2>Update Your Portfolio</h2>
     <form id="updateCustomerDetails" action="/auth/updateCustomerDetails" method="POST" onsubmit="return validatePortfolioForm()">
       <input type="hidden" name="_method" value="PUT">
 
-      <label>Address:</label>
-      <textarea name="address" id="address" required></textarea>
+      <label for="address">Address:</label>
+      <textarea name="address" id="address" rows="3" required></textarea>
 
 
-      <label>City:</label>
+      <label for="city">City:</label>
       <input type="text" name="city" id="city" placeholder="Thane" required>
 
       <button type="submit">Update Portfolio</button>
     </form>
   </div>
+  </div>
 
   <script>
+
+    fetch('/auth/getCustomerDetailsBeforeUpdate')
+    .then(res => res.json())
+    .then(data => {
+      console.log('data', data)
+      
+      document.getElementById('curAddress').textContent = data.data.address || 'N/A';
+      document.getElementById('curCity').textContent = data.data.city || 'N/A';
+
+      // Pre-fill form as well
+     
+      document.getElementById('address').value = data.data.address || '';
+      document.getElementById('city').value = data.data.city || '';
+    })
+    .catch(err => {
+      alert("Failed to load portfolio data.");
+      console.error(err);
+    });
+
     function validatePortfolioForm() {
       const address = document.getElementById("address").value.trim();
       const city = document.getElementById("city").value.trim();
