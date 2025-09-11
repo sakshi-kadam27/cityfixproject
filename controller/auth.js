@@ -197,6 +197,7 @@ exports.getAllServiceProviders = (req, res) => {
     }
 
     const customerCity = customerCityResult[0].city;
+    
     console.log("✅ Customer city:", customerCity);
 
     // Fetch service providers in the same city
