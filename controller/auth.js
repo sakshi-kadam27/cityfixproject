@@ -210,7 +210,7 @@ exports.getAllServiceProviders = (req, res) => {
       }
 
       return res.send({
-        message: "✅ Service Providers fetched successfully!",
+        message: " Service Providers fetched successfully!",
         data: serviceProviders
       });
     });
@@ -284,6 +284,7 @@ exports.getCustomerOrders = (req, res) => {
     return res.status(500).send("Unexpected server error.");
   }
 };
+
 
 // For customers only
 exports.getCustomerDetailsBeforeUpdate = (req, res) => {
@@ -427,3 +428,110 @@ exports.updateOrderStatus = (req, res) => {
     return res.send({ message: `Booking ${id} marked as ${status}` });
   });
 };
+
+
+// vendor dashboard accepted history funcition
+
+
+exports.getAcceptedOnlyOrders = (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.status(401).send("Unauthorized. Please log in.");
+    }
+
+    db.query("SELECT * FROM booking WHERE service_provider_id = ? and status = 'accepted' ", [userId], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).send("Failed to fetch orders.");
+      }
+
+      // Send the booking data back as JSON
+      return res.status(200).json({ success: true, orders: result });
+    });
+
+  } catch (error) {
+    console.error("Unexpected error in getCustomerOrders:", error);
+    return res.status(500).send("Unexpected server error.");
+  }
+};
+
+exports.updateWorkStatus = (req, res) => {
+  try {
+    console.log('reached')
+    const db = req.app.locals.db;
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.status(401).send("Unauthorized. Please log in.");
+    }
+    console.log(req.body);
+
+
+    const updateQuery = `
+      UPDATE booking 
+      SET status = 'work_done' 
+      WHERE service_provider_id = ? and id = ? AND status = 'accepted'
+    `;
+
+       db.query(updateQuery, [ userId, parseInt(req.body.order_id)], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ success: false, message: "Failed to update." });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: "Booking not found or not owned by user." });
+      }
+    return res.status(200).json({ success: true, message:'order updated successfully' });
+    });
+
+  } catch (error) {
+    console.error("Unexpected error in updateWorkStatus:", error);
+    return res.status(500).send("Unexpected server error.");
+  }
+};
+
+exports.customerRateBooking = (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const userId = req.session.user?.id;
+    const { bookingId, rating } = req.body;
+
+    console.log('rating request body:', req.body);
+    if (!userId) {
+      return res.status(401).send("Unauthorized. Please log in.");
+    }
+
+    if (!bookingId || !rating || rating < 1 || rating > 5) {
+      return res.status(400).send("Invalid rating or booking ID.");
+    }
+
+    const updateQuery = `
+      UPDATE booking
+      SET customer_rating = ?
+      WHERE id = ? AND userid = ?
+    `;
+
+    db.query(updateQuery, [parseInt(rating), parseInt(bookingId), userId], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ success: false, message: "Failed to submit rating." });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: "Booking not found or not owned by user." });
+      }
+
+      return res.status(200).json({ success: true, message: "Rating updated successfully." });
+    });
+
+  } catch (error) {
+    console.error("Unexpected error in rateBooking:", error);
+    return res.status(500).send("Unexpected server error.");
+  }
+};
+
+

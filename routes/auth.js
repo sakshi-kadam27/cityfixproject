@@ -15,6 +15,12 @@ router.get('/getCustomerDetailsBeforeUpdate' ,authcontroller.getCustomerDetailsB
 router.get('/getServiceProvidersOrders' ,authcontroller.getServiceProvidersOrders);
 router.patch('/updateOrderStatus' ,authcontroller.updateOrderStatus);
 
+router.get('/getAcceptedOnlyOrders' ,authcontroller.getAcceptedOnlyOrders);
+router.patch('/updateWorkStatus' ,authcontroller.updateWorkStatus);
+router.patch('/customerRateBooking' ,authcontroller.customerRateBooking);
+
+
+
 
 
 

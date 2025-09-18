@@ -309,6 +309,7 @@
       })
         .then(response => response.json())
         .then(data => {
+          console.log('Success:', data);  
           if (data.success) {
             alert("Appointment successfully booked!");
           } else {
@@ -318,7 +319,7 @@
         })
         .catch(error => {
           console.error("Booking error:", error);
-          alert("Something went wrong!");
+          {{!-- alert("Something went wrong!"); --}}
         });
 
 

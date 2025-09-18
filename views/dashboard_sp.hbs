@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Dashboard - CityFix</title>
   <link rel="stylesheet" href="/styles.css">
   <style>
-    /* Reset & Base Styles */
+    /* Base Reset & Styling */
     * {
       margin: 0;
       padding: 0;
@@ -16,6 +17,7 @@
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background: #f4f6f8;
       color: #333;
+      padding: 40px;
     }
 
     header {
@@ -25,15 +27,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    header h1 {
-      font-size: 24px;
-    }
-
-    .user-info {
-      font-size: 16px;
-      font-weight: 500;
     }
 
     nav {
@@ -62,46 +55,82 @@
     }
 
     main {
-      padding: 30px;
+      padding: 30px 0;
     }
 
     h2 {
-      margin-bottom: 15px;
-      color: #007bff;
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 30px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      display: none;
     }
 
-    table th,
-    table td {
-      padding: 12px 15px;
+    th, td {
+      padding: 12px 16px;
       text-align: left;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #eee;
     }
 
-    table th {
-      background-color: #007bff;
-      color: #fff;
+    th {
+      background-color: #0d47a1;
+      color: white;
     }
 
-    table tr:nth-child(even) {
-      background-color: #f2f2f2;
+    tr:hover {
+      background-color: #f1f1f1;
     }
 
-    p {
-      font-size: 16px;
-      color: #666;
+    .status {
+      text-transform: capitalize;
+      font-weight: bold;
     }
 
-    section {
-      margin-bottom: 40px;
+    .status.pending {
+      color: orange;
     }
+
+    .status.accepted {
+      color: green;
+    }
+
+    .status.rejected {
+      color: red;
+    }
+    
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #333;
+    }
+    .work-done-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  margin-left: 10px;
+  text-align: right;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.work-done-btn:hover {
+  background-color: #17b53f;
+}
+
   </style>
 </head>
+
 <body>
   <header>
     <h1>CityFix</h1>
@@ -119,54 +148,117 @@
 
   <main>
     <section>
-      <h2>My Schedule (Today's Orders)</h2>
-      {{#if todaySchedule.length}}
-      <table>
-        <tr>
-          <th>Customer</th>
-          <th>Service</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Location</th>
-        </tr>
-        {{#each todaySchedule}}
-        <tr>
-          <td>{{customer_name}}</td>
-          <td>{{service}}</td>
-          <td>{{date}}</td>
-          <td>{{time}}</td>
-          <td>{{location}}</td>
-        </tr>
-        {{/each}}
-      </table>
-      {{else}}
-      <p>No schedule for today.</p>
-      {{/if}}
-    </section>
-
-    <section>
       <h2>Service History</h2>
-      {{#if serviceHistory.length}}
-      <table>
-        <tr>
-          <th>Customer</th>
-          <th>Service</th>
-          <th>Date</th>
-          <th>Status</th>
-        </tr>
-        {{#each serviceHistory}}
-        <tr>
-          <td>{{customer_name}}</td>
-          <td>{{service}}</td>
-          <td>{{date}}</td>
-          <td>{{status}}</td>
-        </tr>
-        {{/each}}
+
+      <!-- Message placeholder -->
+      <div id="message" class="message">Loading service history...</div>
+
+      <!-- Bookings table -->
+      <table id="bookings-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>work done</th>
+          </tr>
+        </thead>
+        <tbody id="bookings-body">
+          <!-- Bookings will be dynamically injected here -->
+        </tbody>
       </table>
-      {{else}}
-      <p>No previous history.</p>
-      {{/if}}
+
     </section>
   </main>
+
+<script>
+  async function fetchBookings() {
+    try {
+      const response = await fetch("http://localhost:5000/auth/getAcceptedOnlyOrders");
+      const data = await response.json();
+
+      const message = document.getElementById("message");
+      const table = document.getElementById("bookings-table");
+      const tbody = document.getElementById("bookings-body");
+
+      if (!data.success || !data.orders || data.orders.length === 0) {
+        message.textContent = "No service history available.";
+        return;
+      }
+
+      // Show the table and hide the message
+      message.style.display = "none";
+      table.style.display = "table";
+
+      data.orders.forEach(order => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${order.name_of_service}</td>
+          <td>${order.id}</td>
+          <td>${order.time}</td>
+           <td class="status ${order.status}">${order.status}</td>
+          <td>
+            ${order.status === 'accepted' ? `<button class="work-done-btn" data-id="${order.id}">Work Done</button>` : ''}
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+
+document.querySelectorAll('.work-done-btn').forEach(button => {
+  button.addEventListener('click', async function () {
+    const orderId = this.getAttribute('data-id');
+    const confirmed = confirm("Are you sure you want to mark this as work done?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch("http://localhost:5000/auth/updateWorkStatus", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          status: "work_done"
+        })
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert("Status updated to work done'.");
+        // Remove row from DOM
+        const row = this.closest("tr");
+        row.remove();
+
+        // Optional: If no rows left, show message again
+        const tableBody = document.getElementById("bookings-body");
+        if (tableBody.children.length === 0) {
+          document.getElementById("bookings-table").style.display = "none";
+          document.getElementById("message").textContent = "No service history available.";
+          document.getElementById("message").style.display = "block";
+        }
+
+      } else {
+        alert("Failed to update status.");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Error while updating status.");
+    }
+  });
+});
+
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      document.getElementById("message").textContent = "Failed to load bookings.";
+    }
+  }
+
+  window.onload = fetchBookings;
+</script>
+
 </body>
+
 </html>

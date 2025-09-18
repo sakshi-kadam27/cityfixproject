@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 dotenv.config();
 
 const app = express();
+app.use(express.json())
 
 // Setup MySQL connection
 const db = mysql.createConnection({
@@ -30,7 +31,6 @@ db.connect((error) => {
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(
   session({
     secret: "cityfix-secret",
