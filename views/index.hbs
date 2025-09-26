@@ -318,7 +318,7 @@
         localStorage.setItem('user', JSON.stringify(user));
 
         // Update the UI
-        document.getElementById('welcome').textContent = `Welcome, ${user.name}`;
+        document.getElementById('welcome').textContent = `Welcome`;
         document.getElementById('user-role').textContent = `Your role: ${user.occupation}`;
       })
       .catch(err => {

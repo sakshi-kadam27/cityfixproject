@@ -1,8 +1,6 @@
 const express= require('express');
 const router = express.Router();
 const authcontroller = require('../controller/auth');
-
-
 router.post('/register' , authcontroller.register);
 router.post('/login' ,    authcontroller.login);
 router.post('/portfolio' ,authcontroller.updatePortfolio);
@@ -14,19 +12,14 @@ router.get('/getServiceProviderDetailsBeforeUpdate' ,authcontroller.getServicePr
 router.get('/getCustomerDetailsBeforeUpdate' ,authcontroller.getCustomerDetailsBeforeUpdate);
 router.get('/getServiceProvidersOrders' ,authcontroller.getServiceProvidersOrders);
 router.patch('/updateOrderStatus' ,authcontroller.updateOrderStatus);
-
 router.get('/getAcceptedOnlyOrders' ,authcontroller.getAcceptedOnlyOrders);
+
 router.patch('/updateWorkStatus' ,authcontroller.updateWorkStatus);
 router.patch('/customerRateBooking' ,authcontroller.customerRateBooking);
 
-
-
-
-
-
+router.get('/getCompletedOnlyOrders' ,authcontroller.getCompletedOnlyOrders);
 
 // router.post('/dashboard' ,authcontroller.updatePortfolio);
-
 router.get('/me', (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ error: 'Not logged in' });
@@ -39,7 +32,4 @@ router.get('/logout', (req, res) => {
     res.redirect('/login');
   });
 });
-
-
-
 module.exports= router;

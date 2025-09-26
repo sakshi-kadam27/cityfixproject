@@ -8,58 +8,59 @@
 <body>
   <div class="container">
 
-
-  <!-- LEFT: CURRENT DATA -->
-  <div class="left">
-    <h2>Your Current Portfolio</h2>
-    <div class="info">
-      <p><strong>Address:</strong> <span id="curAddress">Loading...</span></p>
-      <p><strong>City:</strong> <span id="curCity">Loading...</span></p>
+    <!-- LEFT: CURRENT DATA -->
+    <div class="left">
+      <h2>Your Current Portfolio</h2>
+      <div class="info">
+        <p><strong>Address:</strong> <span id="curAddress">Loading...</span></p>
+        <p><strong>City:</strong> <span id="curCity">Loading...</span></p>
+      </div>
     </div>
-  </div>
     
     <div class="right">
-    <h2>Update Your Portfolio</h2>
-    <form id="updateCustomerDetails" action="/auth/updateCustomerDetails" method="POST" onsubmit="return validatePortfolioForm()">
-      <input type="hidden" name="_method" value="PUT">
+      <h2>Update Your Portfolio</h2>
+      <form id="updateCustomerDetails" onsubmit="return validatePortfolioForm(event)">
+        <input type="hidden" name="_method" value="PUT">
 
-      <label for="address">Address:</label>
-      <textarea name="address" id="address" rows="3" required></textarea>
+        <label for="address">Address:</label>
+        <textarea name="address" id="address" rows="3" required></textarea>
 
+        <label for="city">City:</label>
+        <input type="text" name="city" id="city" placeholder="Thane" required>
 
-      <label for="city">City:</label>
-      <input type="text" name="city" id="city" placeholder="Thane" required>
+        <button type="submit" style="margin-bottom: 1rem;">Update Portfolio</button> 
+        <button type="button" style="background-color: rgb(233, 10, 10);" onclick="window.history.back()">Back</button>
+      </form>
+    </div>
 
-      <button type="submit">Update Portfolio</button>
-    </form>
-  </div>
   </div>
 
   <script>
-
+    // Fetch and pre-fill current data
     fetch('/auth/getCustomerDetailsBeforeUpdate')
-    .then(res => res.json())
-    .then(data => {
-      console.log('data', data)
-      
-      document.getElementById('curAddress').textContent = data.data.address || 'N/A';
-      document.getElementById('curCity').textContent = data.data.city || 'N/A';
+      .then(res => res.json())
+      .then(data => {
+        console.log('data', data);
+        document.getElementById('curAddress').textContent = data.data.address || 'N/A';
+        document.getElementById('curCity').textContent = data.data.city || 'N/A';
 
-      // Pre-fill form as well
-     
-      document.getElementById('address').value = data.data.address || '';
-      document.getElementById('city').value = data.data.city || '';
-    })
-    .catch(err => {
-      alert("Failed to load portfolio data.");
-      console.error(err);
-    });
+        // Pre-fill form fields as well
+        document.getElementById('address').value = data.data.address || '';
+        document.getElementById('city').value = data.data.city || '';
+      })
+      .catch(err => {
+        alert("Failed to load portfolio data.");
+        console.error(err);
+      });
 
-    function validatePortfolioForm() {
+    // Validate form fields before submitting
+    function validatePortfolioForm(event) {
+      event.preventDefault(); // Prevent the default form submission
+
       const address = document.getElementById("address").value.trim();
       const city = document.getElementById("city").value.trim();
 
-      if (!address  || !city) {
+      if (!address || !city) {
         alert("All fields are required.");
         return false;
       }
@@ -69,82 +70,110 @@
         return false;
       }
 
-      return true;
+      // If validation passes, call the function to update portfolio
+      updatePortfolio(address, city);
+      return false;  // Prevent form from submitting the traditional way
+    }
+
+    // Function to send the form data via AJAX
+    function updatePortfolio(address, city) {
+      const data = { address, city };
+
+      fetch('/auth/updateCustomerDetails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',  // Set the content type to JSON
+        },
+        body: JSON.stringify(data),  // Send the data as a JSON string
+      })
+      .then(res => res.json())  // Parse the response as JSON
+      .then(data => {
+      console.log('data sent', data);
+
+        if (data.message === "✅Customer details updated successfully!") {
+          alert(data.message);
+        } else {
+          alert("❌ Something went wrong. Please try again.");
+        }
+      })
+      .catch(err => {
+        alert("❌ Error: " + err.message);
+        console.error(err);
+      });
     }
   </script>
 </body>
 </html>
 
 <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f2f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+  .container {
+    background-color: #ffffff;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
 
-.container {
-  background-color: #ffffff;
-  padding: 30px;
-  width: 100%;
-  max-width: 500px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
+  h2 {
+    text-align: center;
+    color: #333333;
+    margin-bottom: 25px;
+  }
 
-h2 {
-  text-align: center;
-  color: #333333;
-  margin-bottom: 25px;
-}
+  form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+  }
 
-form label {
-  display: block;
-  margin-bottom: 8px;
-  color: #333;
-  font-weight: 600;
-}
+  form input,
+  form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
 
-form input,
-form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
+  form input:focus,
+  form textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+  }
 
-form input:focus,
-form textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
-}
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
 
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 12px;
-  border: none;
-  width: 100%;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
+  button:hover {
+    background-color: #0056b3;
+  }
 </style>

@@ -148,7 +148,9 @@ console.log(req.session);
 
 exports.updateCustomerDetails = (req, res) => {
   const db = req.app.locals.db;
+  console.log('req.body', req.body)
   const { address, city } = req.body;
+  
 console.log(req.session);
   const userId = req.session.user?.id;
 
@@ -169,7 +171,7 @@ console.log(req.session);
     }
 
     console.log("✅CustomerDetails updated for ID:", userId);
-    res.send("✅CustomerDetails updated successfully!");
+    res.send({ message:"✅Customer details updated successfully!"});
   });
 };
 
@@ -535,3 +537,27 @@ exports.customerRateBooking = (req, res) => {
 };
 
 
+exports.getCompletedOnlyOrders = (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.status(401).send("Unauthorized. Please log in.");
+    }
+
+    db.query("SELECT * FROM booking WHERE service_provider_id = ? and status = 'work_done' ", [userId], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).send("Failed to fetch orders.");
+      }
+
+      // Send the booking data back as JSON
+      return res.status(200).json({ success: true, orders: result });
+    });
+
+  } catch (error) {
+    console.error("Unexpected error in getCustomerOrders:", error);
+    return res.status(500).send("Unexpected server error.");
+  }
+};

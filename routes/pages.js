@@ -43,4 +43,8 @@ router.get('/serviceProviderOrders', (req, res) => {
   res.render('serviceProviderOrders'); // ✅ make sure this just renders the page
 });
 
+router.get('/viewRating', (req, res) => {
+  res.render('viewRating'); // ✅ make sure this just renders the page
+});
+
 module.exports = router;

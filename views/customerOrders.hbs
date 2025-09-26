@@ -98,6 +98,9 @@
         <th>Date</th>
         <th>Time</th>
         <th>Status</th>
+        <th>Rating</th>
+        <th>Submit</th>
+
       </tr>
     </thead>
     <tbody id="bookings-body">
@@ -110,6 +113,7 @@
       try {
         const response = await fetch("http://localhost:5000/auth/getCustomerOrders");
         const data = await response.json();
+
 
         const message = document.getElementById("message");
         const table = document.getElementById("bookings-table");
@@ -126,30 +130,42 @@
 
         data.orders.forEach(order => {
           const row = document.createElement("tr");
-
+ const customerRatingFirstDigit = order.customer_rating ? order.customer_rating.toString().charAt(0) : null;
           const ratingId = `rating-${order.id}`; // Ensure unique ID per row
 
           row.innerHTML = `
     <td>${order.name_of_service}</td>
-    <td>${order.date}</td>
+    <td>${order.id}</td>
     <td>${order.time}</td>
-    <td><span class="status ${order.status}">${order.status}</span></td>
+    <td class="status ${order.status}">${order.status}</td>
     <td>
       ${order.status === "work_done" ? `
-    <div class="star-rating" data-id="${order.id}">
-      ${[1, 2, 3, 4, 5].map(star => `
-        <span data-star="${star}" class="star">&#9733;</span>
-      `).join('')}
-    </div>
-  ` : ''}
+        <div class="star-rating" data-id="${order.id}">
+          ${[1, 2, 3, 4, 5].map(star => {
+            const isFilled = customerRatingFirstDigit && star <= parseInt(customerRatingFirstDigit) ? 'filled' : ''; // Compare to the first digit
+            const disabled = order.customer_rating !== null; // Disable if rating exists
+
+            if (disabled) {
+              // If customer_rating exists, display the stars as filled and disable interaction
+              return `<span class="star ${isFilled}" style="pointer-events: none;">&#9733;</span>`;
+            } else {
+              // If no customer rating, allow interaction with stars
+              return `<span data-star="${star}" class="star ${isFilled}">&#9733;</span>`;
+            }
+          }).join('')}
+        </div>
+      ` : ''}
     </td>
     <td>
-      <button class="submit-rating-btn" data-id="${order.id}">Submit</button>
+      <button class="submit-rating-btn" data-id="${order.id}" ${order.customer_rating !== null ? 'disabled' : ''}>Submit</button>
     </td>
   `;
 
           tbody.appendChild(row);
         });
+
+
+        
 
 
 document.addEventListener("click", function(e) {

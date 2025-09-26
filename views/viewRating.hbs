@@ -134,21 +134,21 @@
 <body>
   <header>
     <h1>CityFix</h1>
-    <div class="user-info">Welcome </div>
+    <div class="user-info">Welcome</div>
   </header>
 
   <nav>
     <ul>
       <li><a href="/service_provider_dashboard">Dashboard</a></li>
       <li><a href="/serviceProviderOrders">My Orders</a></li>
-      <li><a href="/viewRating">My Ratings</a></li>
+      <li><a href="#">My Ratings</a></li>
       <li><a href="/portfolio">Portfolio</a></li>
     </ul>
   </nav>
 
   <main>
     <section>
-      <h2>Service History</h2>
+      <h2>Completed Tasks</h2>
 
       <!-- Message placeholder -->
       <div id="message" class="message">Loading service history...</div>
@@ -160,8 +160,7 @@
             <th>Service</th>
             <th>Date</th>
             <th>Time</th>
-            <th>Status</th>
-            <th>work done</th>
+            <th>Rating</th>
           </tr>
         </thead>
         <tbody id="bookings-body">
@@ -175,7 +174,7 @@
 <script>
   async function fetchBookings() {
     try {
-      const response = await fetch("http://localhost:5000/auth/getAcceptedOnlyOrders");
+      const response = await fetch("http://localhost:5000/auth/getCompletedOnlyOrders");
       const data = await response.json();
 
       const message = document.getElementById("message");
@@ -198,10 +197,7 @@
           <td>${order.name_of_service}</td>
           <td>${order.id}</td>
           <td>${order.time}</td>
-           <td class="status ${order.status}">${order.status}</td>
-          <td>
-            ${order.status === 'accepted' ? `<button class="work-done-btn" data-id="${order.id}">Work Done</button>` : ''}
-          </td>
+           <td class="status ${order.customer_rating}">${order.customer_rating}</td>
         `;
 
         tbody.appendChild(row);
