@@ -232,7 +232,7 @@ exports.storeBookingDetails = (req, res) => {
     const { name_of_service, service_provider_id, date, time } = req.body;
     const status = "pending"; // Default status
 
-    // Validate inputs (optional but recommended)
+    // Validate inputs 
     if (!name_of_service || !service_provider_id || !date || !time) {
       return res.status(400).send("Missing required booking details.");
     }

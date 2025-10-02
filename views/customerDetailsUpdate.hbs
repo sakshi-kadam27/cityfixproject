@@ -37,8 +37,8 @@
 
   <script>
     // Fetch and pre-fill current data
-    fetch('/auth/getCustomerDetailsBeforeUpdate')
-      .then(res => res.json())
+    fetch('/auth/getCustomerDetailsBeforeUpdate') //for fetching the details of logged in customer
+      .then(res => res.json()) //converting http respone into json
       .then(data => {
         console.log('data', data);
         document.getElementById('curAddress').textContent = data.data.address || 'N/A';
